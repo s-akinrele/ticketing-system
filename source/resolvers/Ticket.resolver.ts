@@ -4,7 +4,7 @@ import axios from "axios"
 
 import TicketModel, { Ticket } from "../entities/ticket"
 
-import { AddTicketInput, ListTicketsInput, TicketInput } from "./types/Ticket.input"
+import { AddTicketInput, ListTicketsInput, TicketInput, AddTicketInputs} from "./types/Ticket.input"
 
 @Resolver(() => Ticket)
 export class TicketResolver {
@@ -50,18 +50,37 @@ export class TicketResolver {
     }
 
     const tickets = await queryAllData()
-    tickets.forEach(response => {
-      if (response.title && response.imageUrl) {
-        const ticket = new TicketModel(response)
-        return ticket.saveFields()
-      }
+
+    const formattedTickets = tickets.filter(ticket => {
+      return ticket.title && ticket.imageUrl
     })
-    return tickets
+
+    const ticketInputs: AddTicketInput[] = formattedTickets.map(x => {
+      let y = new AddTicketInput()
+      y.title = x.title
+      y.genre = x.genre
+      y.imageUrl = x.imageUrl
+      y.price = x.price
+      y.inventory = x.inventory
+      y.date = x.date
+      return y
+    })
+    let d = new AddTicketInputs()
+    d.tickets = ticketInputs
+
+    this.bulkAddTickets(d)
+
+    return formattedTickets
   }
 
   @Mutation(() => Ticket)
   public async addTicket(@Arg("input") ticketInput: AddTicketInput): Promise<Ticket> {
     const ticket = new TicketModel(ticketInput)
     return ticket.saveFields()
+  }
+
+  @Mutation(() => [Ticket])
+  public async bulkAddTickets(@Arg("tickets") ticket: AddTicketInputs): Promise<Ticket[]> {
+    return await TicketModel.insertMany(ticket.tickets)
   }
 }

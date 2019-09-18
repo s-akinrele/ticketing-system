@@ -12,6 +12,10 @@ input AddTicketInput {
   date: DateTime!
 }
 
+input AddTicketInputs {
+  tickets: [AddTicketInput!]!
+}
+
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
@@ -24,6 +28,7 @@ input ListTicketsInput {
 
 type Mutation {
   addTicket(input: AddTicketInput!): Ticket!
+  bulkAddTickets(tickets: AddTicketInputs!): [Ticket!]!
 }
 
 """Mongo object id scalar type"""

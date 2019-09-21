@@ -6,6 +6,26 @@ import TicketModel, { Ticket } from "../entities/ticket"
 
 import { AddTicketInput, ListTicketsInput, TicketInput, AddTicketInputs} from "./types/Ticket.input"
 
+type TicketResults = {
+  data: [Ticket]
+}
+
+const cleanResponse = (results: any[]) => {
+  return results.map(({image, _id, genre, ...result}) => {
+    let cleanResult = {...result, imageUrl: image, genre: genre && genre.split('|')}
+    return cleanResult
+  })
+}
+
+const queryAllData = async(skip = 0): Promise<Ticket[]> => {
+  const limit = 100
+  const results: TicketResults = await axios.get(`https://us-central1-bonsai-interview-endpoints.cloudfunctions.net/movieTickets?skip=${skip}&limit=${limit}`)
+  if (!results.data.length) {
+    return cleanResponse(results.data)
+  }
+  return cleanResponse(results.data).concat(await queryAllData(skip + limit))
+}
+
 @Resolver(() => Ticket)
 export class TicketResolver {
   @Query(() => Ticket, { nullable: true })
@@ -28,27 +48,7 @@ export class TicketResolver {
   }
 
   @Query(() => [Ticket])
-  public async fetchAndStoreCleanTickets(): Promise<Ticket[]> {
-    const cleanResponse = (results: any[]) => {
-      return results.map(result => {
-        let cleanResult = {...result, imageUrl: result.image, genre: result.genre && result.genre.split('|')}
-        delete(cleanResult.image)
-        delete(cleanResult._id)
-        return cleanResult
-      })
-    }
-
-    const queryAllData = async(skip = 0): Promise<any[]> => {
-      const limit = 100
-      const results: any = await axios.get(`https://us-central1-bonsai-interview-endpoints.cloudfunctions.net/movieTickets?skip=${skip}&limit=${limit}`)
-      if (results.data.length < 1) {
-        return cleanResponse(results.data)
-      } else {
-        skip += limit
-        return cleanResponse(results.data).concat(await queryAllData(skip))
-      }
-    }
-
+  public async fetchAndStoreCleanTickets(): Promise<AddTicketInput []> {
     const tickets = await queryAllData()
 
     const formattedTickets = tickets.filter(ticket => {
@@ -57,14 +57,9 @@ export class TicketResolver {
 
     const ticketInputs: AddTicketInput[] = formattedTickets.map(x => {
       let y = new AddTicketInput()
-      y.title = x.title
-      y.genre = x.genre
-      y.imageUrl = x.imageUrl
-      y.price = x.price
-      y.inventory = x.inventory
-      y.date = x.date
-      return y
+      return {...y, ...x}
     })
+
     let d = new AddTicketInputs()
     d.tickets = ticketInputs
 

@@ -3,6 +3,34 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AddMovieInput {
+  Title: String!
+  Year: String!
+  Rated: String!
+  Released: DateTime!
+  Runtime: String!
+  Genre: [String!]!
+  Director: String!
+  Writer: String!
+  Actors: [String!]!
+  Plot: String!
+  Language: [String!]!
+  Country: String!
+  Awards: String!
+  Poster: String!
+  Ratings: [RatingInput!]!
+  Metascore: String!
+  imdbRating: String!
+  imdbVotes: String!
+  imdbID: String!
+  Type: String!
+  DVD: String!
+  BoxOffice: String!
+  Production: String!
+  Website: String!
+  Response: String!
+}
+
 input AddTicketInput {
   title: String!
   genre: [String!]!
@@ -26,9 +54,39 @@ input ListTicketsInput {
   limit: Int!
 }
 
+type Movie {
+  _id: ObjectId!
+  Title: String!
+  Year: String!
+  Rated: String!
+  Released: DateTime!
+  Runtime: String!
+  Genre: [String!]!
+  Director: String!
+  Writer: String!
+  Actors: [String!]!
+  Plot: String!
+  Language: [String!]!
+  Country: String!
+  Awards: String!
+  Poster: String!
+  Ratings: [Rating!]!
+  Metascore: String!
+  imdbRating: String!
+  imdbVotes: String!
+  imdbID: String!
+  Type: String!
+  DVD: String!
+  BoxOffice: String!
+  Production: String!
+  Website: String!
+  Response: String!
+}
+
 type Mutation {
   addTicket(input: AddTicketInput!): Ticket!
   bulkAddTickets(tickets: AddTicketInputs!): [Ticket!]!
+  addMovie(input: AddMovieInput!): Movie!
 }
 
 """Mongo object id scalar type"""
@@ -38,6 +96,16 @@ type Query {
   ticket(input: TicketInput!): Ticket
   listTickets(input: ListTicketsInput!): [Ticket!]!
   fetchAndStoreCleanTickets: [Ticket!]!
+}
+
+type Rating {
+  Source: String!
+  Value: String!
+}
+
+input RatingInput {
+  Source: String!
+  Value: String!
 }
 
 type Ticket {

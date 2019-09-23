@@ -1,15 +1,12 @@
 import { ObjectId } from "mongodb"
-import { Field, Float, Int, ObjectType } from "type-graphql"
+import { Field, ObjectType } from "type-graphql"
 import {
   arrayProp as ArrayProperty,
-  instanceMethod as InstanceMethod,
-  InstanceType,
   ModelType,
   prop as Property,
   staticMethod as StaticMethod,
   Typegoose,
 } from "typegoose"
-
 
 @ObjectType()
 class Rating {
@@ -125,10 +122,6 @@ export class Movie extends Typegoose {
   @Field()
   @Property()
   public Website: string
-
-  @Field()
-  @Property()
-  public Response: string
 }
 
 export const MovieModel = new Movie().getModelForClass(Movie)

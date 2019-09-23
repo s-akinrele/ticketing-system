@@ -80,7 +80,6 @@ type Movie {
   BoxOffice: String!
   Production: String!
   Website: String!
-  Response: String!
 }
 
 type Mutation {
@@ -96,6 +95,7 @@ type Query {
   ticket(input: TicketInput!): Ticket
   listTickets(input: ListTicketsInput!): [Ticket!]!
   fetchAndStoreCleanTickets: [Ticket!]!
+  createMoviesForMatchingTickets: [Movie!]!
 }
 
 type Rating {

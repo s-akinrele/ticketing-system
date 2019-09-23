@@ -8,6 +8,7 @@ import {
   prop as Property,
   staticMethod as StaticMethod,
   Typegoose,
+  Ref
 } from "typegoose"
 
 @ObjectType()
@@ -54,6 +55,7 @@ export class Ticket extends Typegoose {
     return this.save()
   }
 }
+
 
 export const TicketModel = new Ticket().getModelForClass(Ticket)
 

@@ -7,8 +7,7 @@ import {
   ModelType,
   prop as Property,
   staticMethod as StaticMethod,
-  Typegoose,
-  Ref
+  Typegoose
 } from "typegoose"
 
 @ObjectType()

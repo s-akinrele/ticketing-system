@@ -1,22 +1,6 @@
-import { ObjectId } from "mongodb"
-import { Field, Float, InputType, Int, ObjectType } from "type-graphql"
+import { Field, InputType } from "type-graphql"
 
 import { Movie } from "../../entities/Movie"
-
-// @InputType()
-// export class MovieInput {
-//   @Field()
-//   public id: ObjectId
-// }
-
-// @InputType()
-// export class ListMoviesInput {
-//   @Field(() => Date)
-//   public cursor: Date
-
-//   @Field(() => Int)
-//   public limit: number
-// }
 
 @InputType()
 export class RatingInput {

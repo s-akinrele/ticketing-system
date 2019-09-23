@@ -14,7 +14,6 @@ export class MovieResolver {
     let tickets = await TicketModel.find()
     let links = tickets.map((ticket :any) => {
         let movieUrl = `http://www.omdbapi.com/?t=${ticket.title}&apikey=e724221e`
-      console.log(movieUrl, 'this is the url')
       return () => axios.get(movieUrl)
     });
 
@@ -31,7 +30,7 @@ export class MovieResolver {
 
     return movies
   }
-  
+
   @Mutation(() => Movie)
   public async addMovie(@Arg("input") movieInput: AddMovieInput): Promise<Movie> {
     const ticket = new MovieModel(movieInput)

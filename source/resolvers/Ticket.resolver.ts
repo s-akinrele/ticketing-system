@@ -5,6 +5,7 @@ import axios from "axios"
 import TicketModel, { Ticket } from "../entities/ticket"
 
 import { AddTicketInput, ListTicketsInput, TicketInput, AddTicketInputs} from "./types/Ticket.input"
+import MovieModel from "../entities/movie"
 
 type TicketResults = {
   data: [Ticket]
@@ -77,5 +78,19 @@ export class TicketResolver {
   @Mutation(() => [Ticket])
   public async bulkAddTickets(@Arg("tickets") ticket: AddTicketInputs): Promise<Ticket[]> {
     return await TicketModel.insertMany(ticket.tickets)
+  }
+
+  @Query(() => [Ticket])
+  public async ticketWithoutMatchingMovies(): Promise<Ticket[]> {
+    let tickets = await TicketModel.find()
+    let emptyTickets: Ticket[] = []
+    for (let i = 0; i < tickets.length; i++) {
+      let ticket = tickets[i]
+      let x = await MovieModel.find({Title: ticket.title})
+      if(x.length < 1) {
+       emptyTickets.push(ticket)
+      }
+    }
+    return emptyTickets
   }
 }

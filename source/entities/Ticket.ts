@@ -9,6 +9,7 @@ import {
   staticMethod as StaticMethod,
   Typegoose
 } from "typegoose"
+import { Movie } from "./movie"
 
 @ObjectType()
 export class Ticket extends Typegoose {
@@ -55,6 +56,15 @@ export class Ticket extends Typegoose {
   }
 }
 
+@ObjectType()
+export class TicketMovie extends Ticket {
+  @Property()
+  public _id: ObjectId
+
+  @Field({ nullable: true })
+  @Property({required: false})
+  public movie?: Movie
+}
 
 export const TicketModel = new Ticket().getModelForClass(Ticket)
 

@@ -20,7 +20,7 @@ export class MovieResolver {
     let movies: Movie[] = []
     links.forEach(async (link) => {
       let movie = await link()
-      if(movie.data.Response === "True") {
+      if (movie.data.Response === "True") {
         let movieModelInput = new AddMovieInput()
         movieModelInput = {...movieModelInput, ...movie.data}
         const newMovie = await this.addMovie(movieModelInput)

@@ -93,7 +93,7 @@ scalar ObjectId
 
 type Query {
   ticket(input: TicketInput!): Ticket
-  listTickets(input: ListTicketsInput!): [Ticket!]!
+  listTickets(input: ListTicketsInput!): [TicketMovie!]!
   fetchAndStoreCleanTickets: [Ticket!]!
   ticketWithoutMatchingMovies(limit: Int = 10): [Ticket!]!
   createMoviesForMatchingTickets: [Movie!]!
@@ -121,4 +121,15 @@ type Ticket {
 
 input TicketInput {
   id: ObjectId!
+}
+
+type TicketMovie {
+  _id: ObjectId!
+  title: String!
+  genre: [String!]!
+  price: Float!
+  inventory: Int!
+  imageUrl: String!
+  date: DateTime!
+  movie: Movie
 }

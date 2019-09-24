@@ -2,10 +2,11 @@ import { Arg, Mutation, Query, Resolver , Int} from "type-graphql"
 
 import axios from "axios"
 
-import TicketModel, { Ticket } from "../entities/ticket"
+import TicketModel, { Ticket, TicketMovie } from "../entities/ticket"
 
 import { AddTicketInput, ListTicketsInput, TicketInput, AddTicketInputs} from "./types/Ticket.input"
-import MovieModel from "../entities/movie"
+import MovieModel, { Movie } from "../entities/movie"
+
 
 type TicketResults = {
   data: [Ticket]
@@ -38,14 +39,32 @@ export class TicketResolver {
     return ticket
   }
 
-  @Query(() => [Ticket])
-  public async listTickets(@Arg("input") input: ListTicketsInput): Promise<Ticket[]> {
+  @Query(() => [TicketMovie])
+  public async listTickets(@Arg("input") input: ListTicketsInput): Promise<TicketMovie[]> {
     const tickets = await TicketModel.find({})
     const result = tickets
       .filter(ticket => ticket.date.getTime() < input.cursor.getTime())
       .sort((a, b) => b.date.getTime() - a.date.getTime())
       .slice(0, input.limit)
-    return result
+
+    let resultsWithMovie: TicketMovie[] = []
+
+    for(let i = 0; i<result.length; i++) {
+      let movie = await MovieModel.find({Title: result[i].title}) || [];
+      let movieInstance = movie[0] || null
+      let ticketMovieInstance = new TicketMovie()
+      ticketMovieInstance._id = result[i]._id
+      ticketMovieInstance.movie = movieInstance
+      ticketMovieInstance.title = result[i].title
+      ticketMovieInstance.date = result[i].date
+      ticketMovieInstance.genre = result[i].genre
+      ticketMovieInstance.imageUrl = result[i].imageUrl
+      ticketMovieInstance.price = result[i].price
+      ticketMovieInstance.inventory = result[i].inventory
+      resultsWithMovie.push(ticketMovieInstance)
+    }
+  
+    return resultsWithMovie
   }
 
   @Query(() => [Ticket])
@@ -56,15 +75,15 @@ export class TicketResolver {
       return ticket.title && ticket.imageUrl
     })
 
-    const ticketInputs: AddTicketInput[] = formattedTickets.map(x => {
-      let y = new AddTicketInput()
-      return {...y, ...x}
+    const ticketInputs: AddTicketInput[] = formattedTickets.map(formattedTicket => {
+      let ticketInput = new AddTicketInput()
+      return {...ticketInput, ...formattedTicket}
     })
 
-    let d = new AddTicketInputs()
-    d.tickets = ticketInputs
+    let formattedTicketInputs = new AddTicketInputs()
+    formattedTicketInputs.tickets = ticketInputs
 
-    this.bulkAddTickets(d)
+    this.bulkAddTickets(formattedTicketInputs)
 
     return formattedTickets
   }

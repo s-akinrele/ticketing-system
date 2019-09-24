@@ -19,29 +19,25 @@ export class TicketResolver {
 
   @Query(() => [TicketMovie])
   public async listTickets(@Arg("input") input: ListTicketsInput): Promise<TicketMovie[]> {
-    const tickets = await TicketModel.find({})
-    const result = tickets
-      .filter(ticket => ticket.date.getTime() < input.cursor.getTime())
-      .sort((a, b) => b.date.getTime() - a.date.getTime())
-      .slice(0, input.limit)
-
+    const tickets = await TicketModel.find({date: { $lte : input.cursor.getTime()}}).sort({date: -1}).limit(input.limit)
+   
     let resultsWithMovie: TicketMovie[] = []
 
-    for(let i = 0; i<result.length; i++) {
-      let movie = await MovieModel.find({Title: result[i].title}) || [];
+    for(let i = 0; i<tickets.length; i++) {
+      let movie = await MovieModel.find({Title: tickets[i].title}) || [];
       let movieInstance = movie[0] || null
       let ticketMovieInstance = new TicketMovie()
-      ticketMovieInstance._id = result[i]._id
+      ticketMovieInstance._id = tickets[i]._id
       ticketMovieInstance.movie = movieInstance
-      ticketMovieInstance.title = result[i].title
-      ticketMovieInstance.date = result[i].date
-      ticketMovieInstance.genre = result[i].genre
-      ticketMovieInstance.imageUrl = result[i].imageUrl
-      ticketMovieInstance.price = result[i].price
-      ticketMovieInstance.inventory = result[i].inventory
+      ticketMovieInstance.title = tickets[i].title
+      ticketMovieInstance.date = tickets[i].date
+      ticketMovieInstance.genre = tickets[i].genre
+      ticketMovieInstance.imageUrl = tickets[i].imageUrl
+      ticketMovieInstance.price = tickets[i].price
+      ticketMovieInstance.inventory = tickets[i].inventory
       resultsWithMovie.push(ticketMovieInstance)
     }
-  
+
     return resultsWithMovie
   }
 

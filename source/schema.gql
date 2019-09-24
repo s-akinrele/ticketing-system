@@ -95,7 +95,7 @@ type Query {
   ticket(input: TicketInput!): Ticket
   listTickets(input: ListTicketsInput!): [Ticket!]!
   fetchAndStoreCleanTickets: [Ticket!]!
-  ticketWithoutMatchingMovies: [Ticket!]!
+  ticketWithoutMatchingMovies(limit: Int = 10): [Ticket!]!
   createMoviesForMatchingTickets: [Movie!]!
 }
 

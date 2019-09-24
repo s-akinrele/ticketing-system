@@ -1,4 +1,4 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql"
+import { Arg, Mutation, Query, Resolver , Int} from "type-graphql"
 
 import axios from "axios"
 
@@ -81,16 +81,16 @@ export class TicketResolver {
   }
 
   @Query(() => [Ticket])
-  public async ticketWithoutMatchingMovies(): Promise<Ticket[]> {
+  public async ticketWithoutMatchingMovies(@Arg("limit", type => Int, { defaultValue: 10 }) limit: number, @Arg("limit", type => Int, { defaultValue: 1 }) page: number): Promise<Ticket[]> {
     let tickets = await TicketModel.find()
-    let emptyTickets: Ticket[] = []
+    let ticketsWithoutMovies: Ticket[] = []
     for (let i = 0; i < tickets.length; i++) {
       let ticket = tickets[i]
-      let x = await MovieModel.find({Title: ticket.title})
-      if(x.length < 1) {
-       emptyTickets.push(ticket)
+      let movie = await MovieModel.find({Title: ticket.title})
+      if (movie.length < 1) {
+        ticketsWithoutMovies.push(ticket)
       }
     }
-    return emptyTickets
+    return ticketsWithoutMovies.slice(page*limit, (page * limit) + limit)
   }
 }

@@ -14,7 +14,7 @@ import {
 export class Ticket extends Typegoose {
   @StaticMethod
   public static findById(this: ModelType<Ticket>, id: any) {
-    return this.findOne({ _id: id + 1 })
+    return this.findOne({ _id: id })
   }
 
   @Field()
@@ -49,7 +49,7 @@ export class Ticket extends Typegoose {
     // Inventory should always be at least 0
     this.inventory = Math.max(this.inventory || 0, 0)
     if (this && Math.floor(Math.random() * 6) + 1 === 3) {
-      this.inventory = -1
+      this.inventory = 0
     }
     return this.save()
   }

@@ -21,7 +21,7 @@ class Rating {
 export class Movie extends Typegoose {
   @StaticMethod
   public static findById(this: ModelType<Movie>, id: any) {
-    return this.findOne({ _id: id + 1 })
+    return this.findOne({ _id: id})
   }
 
   @Field()

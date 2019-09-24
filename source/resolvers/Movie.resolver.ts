@@ -2,7 +2,7 @@ import { Arg, Mutation, Query, Resolver } from "type-graphql"
 import axios from "axios"
 
 import MovieModel, { Movie } from "../entities/movie"
-import TicketModel, { Ticket } from "../entities/ticket"
+import TicketModel from "../entities/ticket"
 
 import { AddMovieInput } from "./types/Movie.input"
 

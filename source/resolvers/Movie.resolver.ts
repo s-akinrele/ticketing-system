@@ -13,7 +13,7 @@ export class MovieResolver {
   public async createMoviesForMatchingTickets(): Promise<Movie[]> {
     let tickets = await TicketModel.find()
     let links = tickets.map((ticket :any) => {
-        let movieUrl = `http://www.omdbapi.com/?t=${ticket.title}&apikey=e724221e`
+        let movieUrl = `${process.env.MOVIE_URL}/?t=${ticket.title}&apikey=e724221e`
       return () => axios.get(movieUrl)
     });
 

@@ -1,3 +1,4 @@
+import * as dotenv from "dotenv"
 import { ApolloServer } from "apollo-server"
 import { ObjectId } from "mongodb"
 import { connect } from "mongoose"
@@ -8,6 +9,8 @@ import { buildSchema } from "type-graphql"
 import { ObjectIdScalar } from "./objectId.scalar"
 import resolvers from "./resolvers"
 import typegooseMiddleware from "./typegooseMiddleware"
+
+dotenv.config()
 
 export const MONGODB_URI = "mongodb://localhost:27017/bonsai-backend-test"
 export const PORT = 4000

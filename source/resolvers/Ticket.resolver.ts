@@ -20,7 +20,7 @@ const cleanResponse = (results: any[]) => {
 
 const queryAllData = async(skip = 0): Promise<Ticket[]> => {
   const limit = 100
-  const results: TicketResults = await axios.get(`https://us-central1-bonsai-interview-endpoints.cloudfunctions.net/movieTickets?skip=${skip}&limit=${limit}`)
+  const results: TicketResults = await axios.get(`${process.env.TICKET_URL}?skip=${skip}&limit=${limit}`)
   if (!results.data.length) {
     return cleanResponse(results.data)
   }

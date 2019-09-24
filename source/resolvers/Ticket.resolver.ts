@@ -1,32 +1,10 @@
 import { Arg, Mutation, Query, Resolver , Int} from "type-graphql"
 
-import axios from "axios"
-
 import TicketModel, { Ticket, TicketMovie } from "../entities/ticket"
 
 import { AddTicketInput, ListTicketsInput, TicketInput, AddTicketInputs} from "./types/Ticket.input"
-import MovieModel, { Movie } from "../entities/movie"
-
-
-type TicketResults = {
-  data: [Ticket]
-}
-
-const cleanResponse = (results: any[]) => {
-  return results.map(({image, _id, genre, ...result}) => {
-    let cleanResult = {...result, imageUrl: image, genre: genre && genre.split('|')}
-    return cleanResult
-  })
-}
-
-const queryAllData = async(skip = 0): Promise<Ticket[]> => {
-  const limit = 100
-  const results: TicketResults = await axios.get(`${process.env.TICKET_URL}?skip=${skip}&limit=${limit}`)
-  if (!results.data.length) {
-    return cleanResponse(results.data)
-  }
-  return cleanResponse(results.data).concat(await queryAllData(skip + limit))
-}
+import MovieModel from "../entities/movie"
+import {queryAllData} from '../helpers/transformTicket'
 
 @Resolver(() => Ticket)
 export class TicketResolver {

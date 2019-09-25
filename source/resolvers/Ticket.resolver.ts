@@ -84,6 +84,7 @@ export class TicketResolver {
         ticketsWithoutMovies.push(ticket)
       }
     }
+
     return ticketsWithoutMovies.slice(page*limit, (page * limit) + limit)
   }
 }
